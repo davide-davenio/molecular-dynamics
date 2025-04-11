@@ -1,0 +1,66 @@
+% cmpute total pot energy with lenard jones of the whole cell
+% E = 1/2 * sumij(phi(rij)
+% phi = 4 eps * [(sig/r)^12-(sig/r)^6]
+% sig = 2.644 A
+% eps = 0.345 eV
+%plot E/N vs N
+
+
+function [d] = dist(Ax,Ay,Az,Bx,By,Bz)
+        d = sqrt((Ax-Bx)*(Ax-Bx) + (Ay-By)*(Ay-By) + (Az-Bz)*(Az-Bz));
+end
+
+function [pot] = LJpotential(r)
+        sig = 2.644;
+        eps = 0.345;
+        pot = 4 * eps * ((sig/r).^12 - (sig/r).^6);
+end
+
+function [Etot] = energy(x, y, z)
+    Etot = 0;
+    for i=1:numel(x)
+        for j=1:numel(x)
+            if j ~= i
+            Etot = Etot + LJPotential(dist(x(i), y(i), z(i), x(j), y(j), z(j)));
+            end
+        end
+    end
+    Etot = 0.5 * Etot;
+end
+
+
+function [x, y, z] = dataVectors(data)
+    x = data(:, 1);
+    y = data(:, 2);
+    z = data(:, 3);
+end 
+
+
+%compute all energies
+
+
+load fcc100a108.txt
+x,y,z = dataVectors(fcc100a108);
+Num = [108];
+Etot = [energy(x,y,z)/Num(1)];
+
+
+load fcc100a256.txt
+x,y,z = dataVectors(fcc100a256);
+Etot(end+1) = [energy(x,y,z)];
+
+load fcc100a500.txt
+x,y,z = dataVectors(fcc100a500);
+Etot(end+1) = [energy(x,y,z)];
+
+load fcc100a864.txt
+x,y,z = dataVectors(fcc100a864);
+Etot(end+1) = [energy(x,y,z)];
+
+load fcc100a1372.txt
+x,y,z = dataVectors(fcc100a1372);
+Etot(end+1) = [energy(x,y,z)];
+
+load fcc100a256.txt
+x,y,z = dataVectors(fcc100a256);
+Etot(end+1) = [energy(x,y,z)];

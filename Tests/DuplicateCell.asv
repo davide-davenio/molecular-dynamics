@@ -1,0 +1,18 @@
+% duplicate the lattice in any direction
+
+function [x, y, z] = loadData(dataFile) 
+    data = load(dataFile);
+    x = data(:, 1);
+    y = data(:, 2);
+    z = data(:, 3);
+end 
+
+function [newv] = duplicateCrystal(v)
+[x,y,z] = loadData("fcc100a108.txt");
+
+xdist = abs(diff(x));
+xdist(xdist == 0) = [];
+side = max(xdist);
+a = min(xdist);
+
+newx = x+side+a;

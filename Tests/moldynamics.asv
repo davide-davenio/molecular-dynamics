@@ -1,0 +1,70 @@
+% compute an MD simulation for a certain number of steps using the velocity
+% verlet algorithm
+
+%parameters
+datafile = "fcc100a"+"256"+".txt";
+fileID = fopen('exp.txt','w');
+foutput = "MDoutput.txt";
+mass = 108*1.66*10^(-27) * (1/16);  
+kb = 1/11603;
+tkelv = 10;
+rc = 4.5;
+MDsteps = 1000;
+dt = 10.^(-14);
+eps = 0.345;
+sig = 2.644;
+
+
+%load data
+[x,y,z] = loadData(datafile);
+nat = numel(x);
+
+%assign initial velocities
+seed = 170901;
+rng(seed)
+
+[vx,vy,vz] = assignv(nat, tkelv,mass, kb);
+
+%compute initial forces
+[nlabels, nn] = neigh(x,y,z,rc);
+[fx,fy,fz] = forces(x,y,z,nn,nlabels,nat,eps,sig);
+
+%compute initial energy and temperature
+[Ekin, tresult] = kinetik(vx,vy,vz,kb,mass,nat);
+[Epot]= energy(x,y,z,nlabels,nn, sig, eps);
+
+Etot = Ekin + Epot;
+fprintf(foutput,"0,%f,%f\n", Etot, tresult);
+
+
+
+%velocity verlet algo
+for j=1:MDsteps
+    %position update
+    for i=1:nat
+        x(i)=x(i)+vx(i)*dt+0.5*(dt^2)*(fx(i)/mass);
+        y(i)=y(i)+vy(i)*dt+0.5*(dt^2)*(fy(i)/mass);
+        z(i)=z(i)+vz(i)*dt+0.5*(dt^2)*(fz(i)/mass);
+    end
+    
+    [nlabels, nn] = neigh(x,y,z,rc);
+    [fx_next,fy_next,fz_next] = forces(x,y,z,nn,nlabels,nat,eps,sig);
+    
+    %velocity update
+    for i=1:nat
+        vx(i) = vx(i) + ((fx(i)+fx_next(i))/(2*mass))*dt;
+        vy(i) = vy(i) + ((fy(i)+fy_next(i))/(2*mass))*dt;
+        vz(i) = vz(i) + ((fz(i)+fz_next(i))/(2*mass))*dt;
+    end
+
+    [Ekin, tresult] = kinetik(vx,vy,vz,kb,mass,nat);
+    [Epot]= energy(x,y,z,nlabels,nn, sig, eps);
+    Etot = Ekin + Epot;
+    fprintf(foutput, "%i,%f,%f\n",j, Etot, tresult);
+    
+    %update forces
+    fx = fx_next;
+    fy = fy_next;
+    fz = fz_next;
+end
+
