@@ -1,0 +1,17 @@
+mass = 11.205e-27;
+kb = 8.618460742911316e-5;
+tkelv = 20;
+rc = 4.5;
+rp = 4.2;
+MDsteps = 2;
+dt = 25.e-15;
+thermalization = 3.e-12;
+eps = 0.345;
+sig = 2.644;
+seed = 42;
+Lx = 16.6416;
+Ly = 16.6416;
+Lz = 16000.6416;
+adddistance = 2.5;
+Csteep = 0.005;
+ftoll = 1.e-3;
