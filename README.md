@@ -1,7 +1,7 @@
 # molecular-dynamics
 Molecular dynamics code in MatLab created for a course project. Course professors were Francesco Montalenti and Roberto Bergamaschini.
 
-"MolecularDynamicsReport.pdf" contains a detailed description of the process
+"Molecular_Dynamics_Report(1).pdf" contains a detailed description of the process
 followed to create and test the code, plus a small example analysis of addatom
 diffusion patterns on an infinite crystal slab.
 
